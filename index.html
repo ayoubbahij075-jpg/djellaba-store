@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>جلابة مغربية عصرية — طلب فوري (الدفع عند الاستلام)</title>
+  <style>
+    * { box-sizing: border-box; font-family: Tahoma, Arial, sans-serif; }
+    body { margin: 0; background: #f6f4f0; color: #1f1f1f; line-height: 1.6; }
+    .container { max-width: 560px; margin: 0 auto; padding: 16px; }
+    .card { background: #fff; border-radius: 14px; padding: 18px; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
+    .badge { display: inline-block; background: #1f1f1f; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+    h1 { font-size: 22px; margin: 10px 0 6px; }
+    .price { font-size: 24px; font-weight: bold; color: #7a1c24; margin: 8px 0; }
+    .old-price { font-size: 15px; color: #888; text-decoration: line-through; margin-right: 8px; }
+
+    /* معرض الصور */
+    .preview-box {
+      width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid #e5dfd5;
+      background: #1c1b1a; position: relative; margin: 10px 0;
+    }
+    .preview-box img {
+      width: 100%; height: 290px; object-fit: cover; display: block;
+    }
+    .color-caption {
+      background: rgba(0,0,0,0.68); color: #fff; padding: 7px 12px;
+      font-size: 13px; display: flex; justify-content: space-between; align-items: center;
+    }
+
+    label { display: block; font-weight: bold; margin: 10px 0 5px; font-size: 14px; }
+    input, select, textarea {
+      width: 100%; padding: 11px 12px; border: 1px solid #d5d0c8; border-radius: 9px;
+      font-size: 15px; background: #fcfbfa;
+    }
+    .colors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
+    .color-btn {
+      border: 1.5px solid #d5d0c8; background: #fff; border-radius: 9px; padding: 9px 6px;
+      text-align: center; cursor: pointer; font-size: 13px; font-weight: bold;
+    }
+    .color-btn.active { border-color: #7a1c24; background: #fdf3f4; color: #7a1c24; }
+    .submit-btn {
+      width: 100%; margin-top: 16px; padding: 14px; border: none; border-radius: 10px;
+      background: #198754; color: #fff; font-size: 17px; font-weight: bold; cursor: pointer;
+    }
+    .submit-btn:hover { background: #157347; }
+    .note { font-size: 12px; color: #555; text-align: center; margin-top: 10px; }
+
+    /* بطاقة التأكيد */
+    .confirm-box {
+      display: none; background: #f2fbf6; border: 1.5px solid #198754;
+      border-radius: 14px; padding: 18px; margin-bottom: 16px;
+    }
+    .confirm-title { color: #146c43; font-size: 18px; font-weight: bold; margin: 0 0 8px; }
+    .summary-item { font-size: 14px; margin: 4px 0; color: #222; }
+    .wa-direct-btn {
+      display: block; text-align: center; text-decoration: none;
+      width: 100%; margin-top: 12px; padding: 12px; border-radius: 10px;
+      background: #198754; color: #fff; font-weight: bold; font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <span class="badge">توصيل متوفر • الدفع عند الاستلام</span>
+      <h1>جلابة مغربية عصرية أنيقة</h1>
+      <div class="price">
+        349 درهم
+        <span class="old-price">499 درهم</span>
+      </div>
+
+      <!-- صورة المنتج حسب اللون -->
+      <div class="preview-box">
+        <img id="productImage" src="" alt="صورة الجلابة المغربية" />
+        <div class="color-caption">
+          <span id="colorLabel">اللون المختار: الأسود الملكي</span>
+          <span>COD الدفع عند الاستلام</span>
+        </div>
+      </div>
+
+      <p style="margin:0; font-size:14px; color:#444;">
+        خياطة متقونة وقماش مريح مناسب للإطلالات اليومية والمناسبات. اختاري اللون والمقاس وعمّري معلوماتك للتأكيد عبر واتساب.
+      </p>
+    </div>
+
+    <!-- بطاقة التأكيد التي تظهر بعد الضغط على تأكيد الطلب -->
+    <div id="confirmBox" class="confirm-box">
+      <div class="confirm-title">تم تجهيز طلبك بنجاح!</div>
+      <p style="margin:0 0 10px; font-size:14px; color:#333;">
+        إليك ملخص طلبك. إذا لم يُفتح واتساب تلقائياً، اضغطي على الزر أسفله لإرسال التفاصيل الآن:
+      </p>
+      <div id="orderSummary"></div>
+      <a id="waDirectLink" href="#" target="_blank" class="wa-direct-btn">إرسال الطلب عبر واتساب الآن</a>
+    </div>
+
+    <form id="orderForm" class="card">
+      <label>اختاري اللون:</label>
+      <div class="colors" id="colorGroup">
+        <button type="button" class="color-btn active" data-color="الأسود الملكي">الأسود الملكي</button>
+        <button type="button" class="color-btn" data-color="البوردو">البوردو</button>
+        <button type="button" class="color-btn" data-color="البني القرفي">البني القرفي</button>
+      </div>
+      <input type="hidden" id="color" value="الأسود الملكي" />
+
+      <label for="size">المقاس:</label>
+      <select id="size" required>
+        <option value="S">S</option>
+        <option value="M" selected>M</option>
+        <option value="L">L</option>
+        <option value="XL">XL</option>
+        <option value="XXL">XXL</option>
+      </select>
+
+      <label for="pack">الباقة:</label>
+      <select id="pack" onchange="updatePrice()">
+        <option value="جلابة واحدة (349 درهم)" data-price="349 درهم" selected>جلابة واحدة — 349 درهم</option>
+        <option value="جلابتان (649 درهم)" data-price="649 درهم">جلابتان — 649 درهم</option>
+      </select>
+
+      <label for="name">الاسم الكامل:</label>
+      <input type="text" id="name" placeholder="مثال: سلمى بنعلي" required />
+
+      <label for="phone">رقم الهاتف (واتساب):</label>
+      <input type="tel" id="phone" placeholder="مثال: 06XXXXXXXX" required />
+
+      <label for="city">المدينة:</label>
+      <input type="text" id="city" placeholder="مثال: مراكش / الدار البيضاء / آسفي" required />
+
+      <label for="address">العنوان بالتفصيل:</label>
+      <textarea id="address" rows="2" placeholder="الحي، الشارع، رقم المنزل..." required></textarea>
+
+      <button type="submit" class="submit-btn">أكدي طلبك الآن عبر واتساب</button>
+      <div class="note">الدفع نقداً عند استلام طلبيتك — سنتواصل معك لتأكيد التفاصيل.</div>
+    </form>
+  </div>
+
+  <script>
+    // 1. بدّل رقم الواتساب برقمك بصيغة دولية بدون + أو صفر بعد 212 (مثال: 212612345678)
+    const WHATSAPP_NUMBER = "212600000000";
+
+    // 2. يمكنك وضع روابط صور حقيقية لكل لون هنا (أو تركها كما هي لتظهر بطاقات لونية جاهزة)
+    const COLOR_IMAGES = {
+      "الأسود الملكي": createColorSVG("#18181b", "#d4af37", "الأسود الملكي"),
+      "البوردو": createColorSVG("#5c1624", "#f3d5dc", "البوردو"),
+      "البني القرفي": createColorSVG("#6b3e26", "#f5e3d3", "البني القرفي")
+    };
+
+    function createColorSVG(bgHex, accentHex, titleText) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+        <rect width="600" height="400" fill="${bgHex}"/>
+        <circle cx="300" cy="165" r="78" fill="none" stroke="${accentHex}" stroke-width="3" opacity="0.7"/>
+        <path d="M225 320 L260 190 L340 190 L375 320 Z" fill="${accentHex}" opacity="0.22"/>
+        <text x="300" y="172" text-anchor="middle" fill="#ffffff" font-family="Tahoma, Arial, sans-serif" font-size="26" font-weight="bold">${titleText}</text>
+        <text x="300" y="210" text-anchor="middle" fill="${accentHex}" font-family="Tahoma, Arial, sans-serif" font-size="16">جلابة مغربية عصرية</text>
+      </svg>`;
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+    }
+
+    const colorButtons = document.querySelectorAll(".color-btn");
+    const colorInput = document.getElementById("color");
+    const productImage = document.getElementById("productImage");
+    const colorLabel = document.getElementById("colorLabel");
+
+    function applyColor(colorName) {
+      colorInput.value = colorName;
+      colorLabel.textContent = "اللون المختار: " + colorName;
+      if (COLOR_IMAGES[colorName]) {
+        productImage.src = COLOR_IMAGES[colorName];
+      }
+      colorButtons.forEach((b) => {
+        b.classList.toggle("active", b.getAttribute("data-color") === colorName);
+      });
+    }
+
+    applyColor("الأسود الملكي");
+
+    colorButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        applyColor(btn.getAttribute("data-color"));
+      });
+    });
+
+    function updatePrice() {
+      const packSelect = document.getElementById("pack");
+      const selectedOption = packSelect.options[packSelect.selectedIndex];
+      const priceText = selectedOption.getAttribute("data-price");
+      document.querySelector(".price").innerHTML =
+        `${priceText} <span class="old-price">${priceText === "349 درهم" ? "499 درهم" : "998 درهم"}</span>`;
+    }
+
+    document.getElementById("orderForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const color = colorInput.value;
+      const size = document.getElementById("size").value;
+      const packSelect = document.getElementById("pack");
+      const pack = packSelect.value;
+      const price = packSelect.options[packSelect.selectedIndex].getAttribute("data-price");
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const address = document.getElementById("address").value.trim();
+
+      const message =
+`طلب جديد — جلابة مغربية عصرية:
+• الاسم الكامل: ${name}
+• رقم الهاتف: ${phone}
+• المدينة: ${city}
+• العنوان: ${address}
+• اللون: ${color}
+• المقاس: ${size}
+• الباقة: ${pack}
+• الثمن: ${price}
+• طريقة الدفع: الدفع عند الاستلام (COD)`;
+
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+      // إظهار بطاقة التأكيد داخل الصفحة
+      const confirmBox = document.getElementById("confirmBox");
+      const orderSummary = document.getElementById("orderSummary");
+      const waDirectLink = document.getElementById("waDirectLink");
+
+      orderSummary.innerHTML = `
+        <div class="summary-item"><strong>الاسم:</strong> ${name}</div>
+        <div class="summary-item"><strong>الهاتف:</strong> ${phone}</div>
+        <div class="summary-item"><strong>المدينة:</strong> ${city}</div>
+        <div class="summary-item"><strong>اللون والمقاس:</strong> ${color} — ${size}</div>
+        <div class="summary-item"><strong>الباقة والثمن:</strong> ${pack} (${price})</div>
+      `;
+      waDirectLink.href = url;
+      confirmBox.style.display = "block";
+      confirmBox.scrollIntoView({ behavior: "smooth" });
+
+      window.open(url, "_blank");
+    });
+  </script>
+</body>
+</html>
